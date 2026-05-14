@@ -295,7 +295,7 @@ function NumberCanvas({
 	return (
 		<div className="number-canvas">
 			<p>{modelStatus}</p>
-			<div style={{ display: "flex", gap: "16px", alignItems: "flex-start" }}>
+			<div className="canvas-container">
 				<div>
 					<canvas
 						className="canvas"
@@ -327,9 +327,14 @@ function NumberCanvas({
 					/>
 				</div>
 			</div>
-			<br />
-			<button onClick={clearAll}>Clear</button>
-			<button onClick={interpretCanvas}>Submit</button>
+			<div className="button-container">
+				<button className="canvas-button" onClick={clearAll}>
+					Clear
+				</button>
+				<button className="canvas-button" onClick={interpretCanvas}>
+					Submit
+				</button>
+			</div>
 		</div>
 	);
 }

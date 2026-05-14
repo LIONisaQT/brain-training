@@ -94,3 +94,15 @@ h2 {
 p {
 	margin: 0;
 }
+
+button {
+	cursor: pointer;
+
+	&:hover {
+		filter: brightness(0.85);
+	}
+
+	&:active {
+		filter: brightness(0.8);
+	}
+}
