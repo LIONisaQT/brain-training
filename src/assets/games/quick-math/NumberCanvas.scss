@@ -1,0 +1,13 @@
+.number-canvas {
+  // background-color: red;
+  position: fixed;
+  width: 100%;
+  bottom: 0;
+  left: 0;
+  box-shadow: 0 20px 20px 8px rgba(0.2, 0.2, 0.2, 0.8);
+
+  canvas {
+    cursor: crosshair;
+    touch-action: none;
+  }
+}
