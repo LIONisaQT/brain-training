@@ -18,12 +18,15 @@ interface QuickMathProps {
   canvasHeight?: number;
   /** Called with the interpreted number when the user presses Submit. */
   onSubmit?: (value: number) => void;
+  /** Whether the quiz is complete. */
+  isComplete?: boolean;
 }
 
 function NumberCanvas({
   canvasWidth = CANVAS_WIDTH,
   canvasHeight = CANVAS_HEIGHT,
   onSubmit,
+  isComplete = false,
 }: QuickMathProps) {
   // expose bottom UI height to the page so QuickMath can account for it
   useEffect(() => {
@@ -259,7 +262,7 @@ function NumberCanvas({
   }, [model, onSubmit, clearAll]);
 
   return (
-    <div className="number-canvas">
+    <div className={`number-canvas ${isComplete ? "complete" : ""}`}>
       <p>{modelStatus}</p>
       {/* Hidden mirror canvases — not rendered visually, used for inference */}
       <div className="hidden-canvas">

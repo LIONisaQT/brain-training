@@ -152,6 +152,13 @@ function QuickMath({ numProblems }: QuickMath) {
   }, [results]);
 
   useEffect(() => {
+    const isQuizComplete = results.every((result) => result !== "unanswered");
+    if (isQuizComplete && containerRef.current) {
+      containerRef.current.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, [results]);
+
+  useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
     const currentElement = container.children[index] as HTMLElement | undefined;
@@ -217,9 +224,14 @@ function QuickMath({ numProblems }: QuickMath) {
     setIndex(Math.min(problemList.length - 1, index + 1));
   };
 
+  const isQuizComplete = results.every((result) => result !== "unanswered");
+
   return (
     <>
-      <div className="problem-set" ref={containerRef}>
+      <div
+        className={`problem-set ${isQuizComplete ? "complete" : ""}`}
+        ref={containerRef}
+      >
         {problemList.map((problem, i) => (
           <div className={`problem ${i === index ? "current" : ""}`} key={i}>
             <p>{problem.num1}</p>
@@ -246,7 +258,7 @@ function QuickMath({ numProblems }: QuickMath) {
           </div>
         ))}
       </div>
-      <NumberCanvas onSubmit={onSubmit} />
+      <NumberCanvas onSubmit={onSubmit} isComplete={isQuizComplete} />
     </>
   );
 }

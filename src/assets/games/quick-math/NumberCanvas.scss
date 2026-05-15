@@ -11,6 +11,13 @@
   align-items: center;
   padding: 20px 0;
   gap: 12px;
+  transition: transform 0.6s ease-in-out;
+  transform: translateY(0);
+
+  &.complete {
+    /* Move the canvas down off-screen */
+    transform: translateY(100vh);
+  }
 
   .hidden-canvas {
     display: none;
