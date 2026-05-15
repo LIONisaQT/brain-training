@@ -12,6 +12,10 @@
   padding: 20px 0;
   gap: 12px;
 
+  .hidden-canvas {
+    display: none;
+  }
+
   .canvas-container {
     display: flex;
     gap: 2px;
