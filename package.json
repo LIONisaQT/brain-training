@@ -6,8 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "lint": "eslint .",
-    "preview": "vite preview"
+    "lint": "eslint src",
+    "preview": "vite preview",
+    "prepare": "husky"
   },
   "dependencies": {
     "@tensorflow/tfjs": "^4.22.0",
@@ -31,9 +32,22 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.6.0",
+    "lint-staged": "^16.4.0",
+    "prettier": "^3.8.3",
     "sass": "^1.99.0",
     "typescript": "~6.0.2",
     "typescript-eslint": "^8.59.2",
     "vite": "^8.0.12"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,ts,tsx,json,css,scss,md}": [
+      "prettier --write",
+      "eslint --fix"
+    ]
   }
 }
