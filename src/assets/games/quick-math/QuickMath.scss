@@ -1,0 +1,26 @@
+.problem-set {
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  gap: 20px;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+  transition: transform 0.3s ease-in-out;
+
+  .problem {
+    display: flex;
+
+    p {
+      font-size: 24pt;
+    }
+  }
+
+  .current {
+    padding: 24px 0;
+
+    p {
+      font-size: 56pt;
+    }
+  }
+}

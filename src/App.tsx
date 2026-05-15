@@ -1,10 +1,10 @@
 import "./App.css";
-import NumberCanvas from "./assets/games/quick-math/NumberCanvas";
+import QuickMath from "./assets/games/quick-math/QuickMath";
 
 function App() {
 	return (
 		<>
-			<NumberCanvas />
+			<QuickMath />
 		</>
 	);
 }
