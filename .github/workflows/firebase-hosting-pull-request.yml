@@ -28,7 +28,7 @@ jobs:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_RYAN_SHEE }}
           projectId: ryan-shee
-          target: preview
+          target: brain-training
           channelId: live
 
       - name: Comment PR with preview URL
@@ -40,5 +40,5 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: "Preview deployed at https://preview.ryanshee.com"
+              body: "Preview deployed at https://brain-training.ryanshee.com"
             })
