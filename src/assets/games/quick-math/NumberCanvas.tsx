@@ -25,6 +25,28 @@ function NumberCanvas({
   canvasHeight = CANVAS_HEIGHT,
   onSubmit,
 }: QuickMathProps) {
+  // expose bottom UI height to the page so QuickMath can account for it
+  useEffect(() => {
+    const el = document.querySelector(".number-canvas") as HTMLElement | null;
+    const setVar = () => {
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      // add a little extra padding for safety
+      const total = Math.ceil(rect.height + 24);
+      document.documentElement.style.setProperty(
+        "--quickmath-bottom-ui-height",
+        `${total}px`,
+      );
+    };
+    setVar();
+    const ro = new ResizeObserver(setVar);
+    if (el) ro.observe(el);
+    window.addEventListener("resize", setVar);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", setVar);
+    };
+  }, []);
   // Visible canvases (gray background, black stroke)
   const tensCanvasRef = useRef<HTMLCanvasElement>(null);
   const unitsCanvasRef = useRef<HTMLCanvasElement>(null);

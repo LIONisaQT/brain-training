@@ -1,26 +1,47 @@
 .problem-set {
   display: flex;
-  flex-direction: column-reverse;
+  flex-direction: column;
   align-items: center;
   gap: 20px;
   height: 100%;
-  overflow: hidden;
-  position: relative;
-  transition: transform 0.3s ease-in-out;
+  overflow-y: auto;
+  /* top padding: reasonable spacing for centering, clamped to ensure room for elements */
+  padding-top: clamp(2rem, 15vh, 20vh);
+  /* bottom padding: account for fixed canvas height plus buffer */
+  padding-bottom: calc(var(--quickmath-bottom-ui-height, 50vh) + 2rem);
+  scroll-behavior: smooth;
 
   .problem {
     display: flex;
+    opacity: 0.4;
+    padding: 0;
+    transform: scale(1);
+    transition:
+      opacity 0.15s ease-in-out,
+      padding 0.15s ease-in-out,
+      transform 0.15s ease-in-out;
 
     p {
       font-size: 24pt;
+      transition: font-size 0.15s ease-in-out;
+    }
+
+    &.current {
+      opacity: 1;
+      padding: 24px 0;
+      transform: scale(1.03);
+
+      p {
+        font-size: 56pt;
+      }
     }
   }
+}
 
-  .current {
-    padding: 24px 0;
-
-    p {
-      font-size: 56pt;
-    }
+/* mobile: use fixed minimum padding to ensure visibility */
+@media (max-width: 600px) {
+  .problem-set {
+    padding-top: 4rem;
+    padding-bottom: calc(var(--quickmath-bottom-ui-height, 50vh) + 2rem);
   }
 }

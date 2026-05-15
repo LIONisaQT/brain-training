@@ -145,20 +145,61 @@ function QuickMath({ numProblems }: QuickMath) {
   };
 
   useEffect(() => {
+    const isQuizComplete = results.every((result) => result !== "unanswered");
     if (containerRef.current) {
-      const currentElement = containerRef.current.children[
-        index
-      ] as HTMLElement;
-      if (currentElement) {
-        const containerHeight = containerRef.current.clientHeight;
-        const elementOffsetTop = currentElement.offsetTop;
-        const elementHeight = currentElement.clientHeight;
-        const offsetNeeded =
-          elementOffsetTop + elementHeight / 2 - containerHeight / 2;
-        const translateValue = -offsetNeeded;
-        containerRef.current.style.transform = `translateY(${translateValue}px)`;
-      }
+      containerRef.current.style.overflowY = isQuizComplete ? "auto" : "hidden";
     }
+  }, [results]);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+    const currentElement = container.children[index] as HTMLElement | undefined;
+    if (!currentElement) return;
+
+    // Read bottom UI height and top padding
+    const rootStyles = getComputedStyle(document.documentElement);
+    const bottomVar = rootStyles.getPropertyValue(
+      "--quickmath-bottom-ui-height",
+    );
+    const bottomUI = bottomVar ? parseFloat(bottomVar) : 0;
+
+    const cs = getComputedStyle(container);
+    const topPad = parseFloat(cs.paddingTop || "0px");
+
+    const elRect = currentElement.getBoundingClientRect();
+    const elHeight = elRect.height;
+    const maxScroll = container.scrollHeight - container.clientHeight;
+
+    // Visible region: from top of viewport to just above the fixed canvas
+    const visibleTop = 0;
+    const visibleBottom = window.innerHeight - bottomUI;
+    const availableHeight = visibleBottom - visibleTop;
+
+    // Target: center the element within the visible region, but respect top padding aesthetics
+    // Ideal center is at topPad + (availableHeight - topPad) / 2
+    const idealCenterY = topPad + (availableHeight - topPad) / 2;
+
+    // If element fits, center it at idealCenterY; otherwise, fit it within bounds
+    let targetViewportY;
+    if (elHeight <= availableHeight) {
+      targetViewportY = idealCenterY - elHeight / 2;
+      // Clamp to ensure element stays within visible bounds
+      targetViewportY = Math.max(
+        topPad,
+        Math.min(targetViewportY, visibleBottom - elHeight),
+      );
+    } else {
+      // Element too tall: show from top
+      targetViewportY = topPad;
+    }
+
+    // Compute the scroll position needed to place element at targetViewportY
+    const elementDocPosition = container.scrollTop + elRect.top;
+    const targetScrollTop = elementDocPosition - targetViewportY;
+
+    const finalScroll = Math.min(maxScroll, Math.max(0, targetScrollTop));
+    container.scrollTo({ top: finalScroll, behavior: "smooth" });
   }, [index]);
 
   const onSubmit = (num: number) => {
