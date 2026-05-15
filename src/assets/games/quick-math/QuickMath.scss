@@ -38,6 +38,12 @@
   }
 }
 
+.complete {
+  .problem {
+    opacity: 1;
+  }
+}
+
 /* mobile: use fixed minimum padding to ensure visibility */
 @media (max-width: 600px) {
   .problem-set {

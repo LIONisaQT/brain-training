@@ -221,7 +221,7 @@ function QuickMath({ numProblems }: QuickMath) {
     newSubmissions[index] = num;
     setSubmissions(newSubmissions);
 
-    setIndex(Math.min(problemList.length - 1, index + 1));
+    setIndex(index + 1);
   };
 
   const isQuizComplete = results.every((result) => result !== "unanswered");
