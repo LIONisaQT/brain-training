@@ -9,6 +9,7 @@ import {
   getDisplayOperation,
 } from "./quick-math-utils";
 import { Checkmark, Cross } from "../../../utils/svgs";
+import { useStopwatch } from "../../../utils/useStopwatch";
 
 const DEFAULT_SET_LIST = 20;
 
@@ -32,6 +33,13 @@ function initializeGame(numProblems: number): GameState {
   };
 }
 
+function formatTime(ms: number): string {
+  const totalSeconds = Math.floor(ms / 1000);
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+  return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+}
+
 function QuickMath({ numProblems }: QuickMath) {
   const numProblemsValue = numProblems ?? DEFAULT_SET_LIST;
 
@@ -45,12 +53,19 @@ function QuickMath({ numProblems }: QuickMath) {
   const isCompleteRef = useRef(false);
 
   const isQuizComplete = results.every((result) => result !== "unanswered");
+
+  const { startStopwatch, elapsedMs: finalElapsedMs } =
+    useStopwatch(isQuizComplete);
+  const avgTimeMs = finalElapsedMs / numProblemsValue;
+
   const [seeModal, setSeeModal] = useState(true);
 
   const resetGame = useCallback(() => {
     isCompleteRef.current = false;
+    setSeeModal(true);
+    startStopwatch();
     setGameState(initializeGame(numProblemsValue));
-  }, [numProblemsValue]);
+  }, [numProblemsValue, startStopwatch]);
 
   useEffect(() => {
     if (containerRef.current) {
@@ -160,11 +175,11 @@ function QuickMath({ numProblems }: QuickMath) {
               <section className="modal-body">
                 <div className="modal-body-line">
                   <p>Time</p>
-                  <p>99:99</p>
+                  <p>{formatTime(finalElapsedMs)}</p>
                 </div>
                 <div className="modal-body-line">
                   <p>Avg time per question</p>
-                  <p>99:99</p>
+                  <p>{formatTime(avgTimeMs)}</p>
                 </div>
                 <div className="modal-body-line">
                   <p>Correct</p>
