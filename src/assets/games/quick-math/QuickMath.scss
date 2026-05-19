@@ -10,6 +10,8 @@
   /* bottom padding: account for fixed canvas height plus buffer */
   padding-bottom: calc(var(--quickmath-bottom-ui-height, 50vh) + 2rem);
   scroll-behavior: smooth;
+  font-family: "Domine", serif;
+  font-weight: 600;
 
   .problem {
     display: flex;
