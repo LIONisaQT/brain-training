@@ -9,7 +9,7 @@ import {
   getDisplayOperation,
 } from "./quick-math-utils";
 import { Checkmark, Cross } from "../../../utils/svgs";
-import { useStopwatch } from "../../../utils/useStopwatch";
+import { formatTime, useStopwatch } from "../../../utils/useStopwatch";
 
 const DEFAULT_SET_LIST = 20;
 
@@ -31,13 +31,6 @@ function initializeGame(numProblems: number): GameState {
     submissions: Array(numProblems).fill(undefined),
     index: 0,
   };
-}
-
-function formatTime(ms: number): string {
-  const totalSeconds = Math.floor(ms / 1000);
-  const minutes = Math.floor(totalSeconds / 60);
-  const seconds = totalSeconds % 60;
-  return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
 }
 
 function QuickMath({ numProblems }: QuickMath) {
@@ -129,6 +122,11 @@ function QuickMath({ numProblems }: QuickMath) {
   const onSubmit = (num: number) => {
     const correctAnswer = calculateAnswer(problemList[index]);
     const isCorrect = num === correctAnswer;
+
+    // TODO: Remove this once a proper countdown/ready screen is added before the quiz starts
+    if (index === 0) {
+      startStopwatch();
+    }
 
     setGameState((prev) => ({
       ...prev,

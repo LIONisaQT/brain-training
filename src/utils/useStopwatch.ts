@@ -26,3 +26,7 @@ export function useStopwatch(complete: boolean): UseStopwatchReturn {
 
   return { startStopwatch, elapsedMs };
 }
+
+export function formatTime(ms: number): string {
+  return (ms / 1000).toFixed(1) + "s";
+}
