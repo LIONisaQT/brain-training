@@ -45,8 +45,8 @@ function QuickMath({ numProblems }: QuickMath) {
   const isCompleteRef = useRef(false);
 
   const isQuizComplete = results.every((result) => result !== "unanswered");
+  const [seeModal, setSeeModal] = useState(true);
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const resetGame = useCallback(() => {
     isCompleteRef.current = false;
     setGameState(initializeGame(numProblemsValue));
@@ -151,6 +151,47 @@ function QuickMath({ numProblems }: QuickMath) {
         ))}
       </div>
       <NumberCanvas onSubmit={onSubmit} isComplete={isQuizComplete} />
+      {isQuizComplete && seeModal && (
+        <div className="modal-element">
+          <div className="modal-bg"></div>
+          <div className="modal">
+            <section className="modal-content">
+              <h1 className="modal-title">Quiz Complete</h1>
+              <section className="modal-body">
+                <div className="modal-body-line">
+                  <p>Time</p>
+                  <p>99:99</p>
+                </div>
+                <div className="modal-body-line">
+                  <p>Avg time per question</p>
+                  <p>99:99</p>
+                </div>
+                <div className="modal-body-line">
+                  <p>Correct</p>
+                  <p>
+                    {
+                      gameState.results.filter((res) => res === "correct")
+                        .length
+                    }{" "}
+                    / {gameState.problemList.length}
+                  </p>
+                </div>
+              </section>
+            </section>
+            <section className="modal-button-container">
+              <button
+                className="modal-button"
+                onClick={() => setSeeModal(false)}
+              >
+                Review
+              </button>
+              <button className="modal-button" onClick={() => resetGame()}>
+                Restart
+              </button>
+            </section>
+          </div>
+        </div>
+      )}
     </>
   );
 }
