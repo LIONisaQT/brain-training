@@ -86,7 +86,7 @@ function NumberCanvas({
     ctx.fillStyle = "lightgray";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.strokeStyle = "black";
-    ctx.lineWidth = 16;
+    ctx.lineWidth = 12;
     ctx.lineCap = "round";
     ctx.lineJoin = "round";
   }, []);
@@ -263,7 +263,7 @@ function NumberCanvas({
 
   return (
     <div className={`number-canvas ${isComplete ? "complete" : ""}`}>
-      <p>{modelStatus}</p>
+      <p>{modelStatus ? "Ready for input" : "Loading MNIST model"}</p>
       {/* Hidden mirror canvases — not rendered visually, used for inference */}
       <div className="hidden-canvas">
         <canvas ref={tensMirrorRef} width={canvasWidth} height={canvasHeight} />
@@ -275,7 +275,6 @@ function NumberCanvas({
       </div>
       <div className="canvas-container">
         <div>
-          <p>Tens</p>
           <canvas
             ref={tensCanvasRef}
             width={canvasWidth}
@@ -290,7 +289,6 @@ function NumberCanvas({
           />
         </div>
         <div>
-          <p>Units</p>
           <canvas
             ref={unitsCanvasRef}
             width={canvasWidth}
