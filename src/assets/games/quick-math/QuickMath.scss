@@ -134,6 +134,21 @@
   }
 }
 
+.restart-button {
+  z-index: 998;
+  position: fixed;
+  right: 8px;
+  bottom: 8px;
+
+  button {
+    border-radius: 50%;
+    border: none;
+    padding: 12px;
+    box-shadow: 0 0 24px 2px rgba(0.2, 0.2, 0.2, 0.1);
+    background-color: rgb(125, 209, 245); // TODO: Standardize
+  }
+}
+
 /* mobile: use fixed minimum padding to ensure visibility */
 @media (max-width: 600px) {
   .problem-set {

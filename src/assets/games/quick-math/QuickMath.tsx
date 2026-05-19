@@ -205,6 +205,11 @@ function QuickMath({ numProblems }: QuickMath) {
           </div>
         </div>
       )}
+      {isQuizComplete && !seeModal && (
+        <div className="restart-button">
+          <button onClick={resetGame}>🔄</button>
+        </div>
+      )}
     </>
   );
 }
