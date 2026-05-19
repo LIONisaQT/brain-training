@@ -13,6 +13,7 @@
 
   .problem {
     display: flex;
+    gap: 4px;
     opacity: 0.4;
     padding: 0;
     transform: scale(1);
@@ -26,6 +27,21 @@
       transition: font-size 0.15s ease-in-out;
     }
 
+    .problem-answer {
+      display: flex;
+      align-items: center;
+      gap: 0.5em;
+
+      p {
+        margin: 0;
+      }
+    }
+
+    .problem-result {
+      display: flex;
+      align-items: center;
+    }
+
     &.current {
       opacity: 1;
       padding: 24px 0;
@@ -36,11 +52,26 @@
       }
     }
   }
-}
 
-.complete {
-  .problem {
-    opacity: 1;
+  /* When quiz is complete, show all questions at full opacity and remove highlighting */
+  &.complete {
+    padding-bottom: 2rem;
+
+    .problem {
+      opacity: 1;
+      padding: 0;
+      transform: scale(1);
+
+      &.current {
+        opacity: 1;
+        padding: 0;
+        transform: scale(1);
+
+        p {
+          font-size: 24pt;
+        }
+      }
+    }
   }
 }
 
@@ -49,5 +80,9 @@
   .problem-set {
     padding-top: 4rem;
     padding-bottom: calc(var(--quickmath-bottom-ui-height, 50vh) + 2rem);
+
+    &.complete {
+      padding-bottom: 2rem;
+    }
   }
 }

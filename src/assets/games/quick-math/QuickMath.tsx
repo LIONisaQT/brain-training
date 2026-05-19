@@ -29,24 +29,31 @@ function QuickMath({ numProblems }: QuickMath) {
   );
   const [index, setIndex] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
+  const isCompleteRef = useRef(false);
+
+  const isQuizComplete = results.every((result) => result !== "unanswered");
 
   useEffect(() => {
-    const isQuizComplete = results.every((result) => result !== "unanswered");
     if (containerRef.current) {
       containerRef.current.style.overflowY = isQuizComplete ? "auto" : "hidden";
-    }
-  }, [results]);
+      isCompleteRef.current = isQuizComplete;
 
-  useEffect(() => {
-    const isQuizComplete = results.every((result) => result !== "unanswered");
-    if (isQuizComplete && containerRef.current) {
-      containerRef.current.scrollTo({ top: 0, behavior: "smooth" });
+      // Scroll to top after making the container scrollable
+      if (isQuizComplete) {
+        // Wait a bit longer to ensure all rendering is done
+        setTimeout(() => {
+          if (containerRef.current) {
+            containerRef.current.scrollTop = 0;
+          }
+        }, 200);
+      }
     }
-  }, [results]);
+  }, [isQuizComplete]);
 
   useEffect(() => {
     const container = containerRef.current;
-    if (!container) return;
+    if (!container || isCompleteRef.current) return;
+
     const currentElement = container.children[index] as HTMLElement | undefined;
     if (!currentElement) return;
 
@@ -93,7 +100,7 @@ function QuickMath({ numProblems }: QuickMath) {
 
     const finalScroll = Math.min(maxScroll, Math.max(0, targetScrollTop));
     container.scrollTo({ top: finalScroll, behavior: "smooth" });
-  }, [index]);
+  }, [index, results]);
 
   const onSubmit = (num: number) => {
     const correctAnswer = calculateAnswer(problemList[index]);
@@ -110,8 +117,6 @@ function QuickMath({ numProblems }: QuickMath) {
     setIndex(index + 1);
   };
 
-  const isQuizComplete = results.every((result) => result !== "unanswered");
-
   return (
     <>
       <div
@@ -124,15 +129,8 @@ function QuickMath({ numProblems }: QuickMath) {
             <p>{getDisplayOperation(problem.operation)}</p>
             <p>{problem.num2}</p>
             {submissions[i] !== undefined && (
-              <div
-                className="problem-answer"
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "0.5em",
-                }}
-              >
-                <p style={{ margin: 0 }}>= {submissions[i]}</p>
+              <div className="problem-answer">
+                <p>=&nbsp;{submissions[i]}</p>
                 {(results[i] === "correct" || results[i] === "incorrect") && (
                   <div className="problem-result">
                     {results[i] === "correct" && <Checkmark />}
