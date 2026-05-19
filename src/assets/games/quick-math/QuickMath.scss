@@ -111,6 +111,10 @@
           display: flex;
           flex-direction: row;
           justify-content: space-between;
+
+          p {
+            font-size: 16pt;
+          }
         }
       }
     }
@@ -139,5 +143,9 @@
     &.complete {
       padding-bottom: 2rem;
     }
+  }
+
+  .modal {
+    width: 90%;
   }
 }

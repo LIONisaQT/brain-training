@@ -176,7 +176,7 @@ function QuickMath({ numProblems }: QuickMath) {
                   <p>{formatTime(finalElapsedMs)}</p>
                 </div>
                 <div className="modal-body-line">
-                  <p>Avg time per question</p>
+                  <p>Avg time</p>
                   <p>{formatTime(avgTimeMs)}</p>
                 </div>
                 <div className="modal-body-line">
