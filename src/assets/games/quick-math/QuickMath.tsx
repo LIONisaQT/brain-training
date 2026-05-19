@@ -1,6 +1,6 @@
 import "./QuickMath.scss";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import NumberCanvas from "./NumberCanvas";
 import {
   type Problem,
@@ -16,31 +16,48 @@ interface QuickMath {
   numProblems?: number;
 }
 
+interface GameState {
+  problemList: Problem[];
+  results: ("correct" | "incorrect" | "unanswered")[];
+  submissions: (number | undefined)[];
+  index: number;
+}
+
+function initializeGame(numProblems: number): GameState {
+  return {
+    problemList: generateProblems(numProblems),
+    results: Array(numProblems).fill("unanswered"),
+    submissions: Array(numProblems).fill(undefined),
+    index: 0,
+  };
+}
+
 function QuickMath({ numProblems }: QuickMath) {
   const numProblemsValue = numProblems ?? DEFAULT_SET_LIST;
-  const [problemList] = useState<Problem[]>(() =>
-    generateProblems(numProblemsValue),
+
+  const [gameState, setGameState] = useState<GameState>(() =>
+    initializeGame(numProblemsValue),
   );
-  const [results, setResults] = useState<
-    ("correct" | "incorrect" | "unanswered")[]
-  >(() => Array(numProblemsValue).fill("unanswered"));
-  const [submissions, setSubmissions] = useState<(number | undefined)[]>(() =>
-    Array(numProblemsValue).fill(undefined),
-  );
-  const [index, setIndex] = useState(0);
+
+  const { problemList, results, submissions, index } = gameState;
+
   const containerRef = useRef<HTMLDivElement>(null);
   const isCompleteRef = useRef(false);
 
   const isQuizComplete = results.every((result) => result !== "unanswered");
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const resetGame = useCallback(() => {
+    isCompleteRef.current = false;
+    setGameState(initializeGame(numProblemsValue));
+  }, [numProblemsValue]);
 
   useEffect(() => {
     if (containerRef.current) {
       containerRef.current.style.overflowY = isQuizComplete ? "auto" : "hidden";
       isCompleteRef.current = isQuizComplete;
 
-      // Scroll to top after making the container scrollable
       if (isQuizComplete) {
-        // Wait a bit longer to ensure all rendering is done
         setTimeout(() => {
           if (containerRef.current) {
             containerRef.current.scrollTop = 0;
@@ -57,7 +74,6 @@ function QuickMath({ numProblems }: QuickMath) {
     const currentElement = container.children[index] as HTMLElement | undefined;
     if (!currentElement) return;
 
-    // Read bottom UI height and top padding
     const rootStyles = getComputedStyle(document.documentElement);
     const bottomVar = rootStyles.getPropertyValue(
       "--quickmath-bottom-ui-height",
@@ -71,30 +87,23 @@ function QuickMath({ numProblems }: QuickMath) {
     const elHeight = elRect.height;
     const maxScroll = container.scrollHeight - container.clientHeight;
 
-    // Visible region: from top of viewport to just above the fixed canvas
     const visibleTop = 0;
     const visibleBottom = window.innerHeight - bottomUI;
     const availableHeight = visibleBottom - visibleTop;
 
-    // Target: center the element within the visible region, but respect top padding aesthetics
-    // Ideal center is at topPad + (availableHeight - topPad) / 2
     const idealCenterY = topPad + (availableHeight - topPad) / 2;
 
-    // If element fits, center it at idealCenterY; otherwise, fit it within bounds
     let targetViewportY;
     if (elHeight <= availableHeight) {
       targetViewportY = idealCenterY - elHeight / 2;
-      // Clamp to ensure element stays within visible bounds
       targetViewportY = Math.max(
         topPad,
         Math.min(targetViewportY, visibleBottom - elHeight),
       );
     } else {
-      // Element too tall: show from top
       targetViewportY = topPad;
     }
 
-    // Compute the scroll position needed to place element at targetViewportY
     const elementDocPosition = container.scrollTop + elRect.top;
     const targetScrollTop = elementDocPosition - targetViewportY;
 
@@ -106,15 +115,14 @@ function QuickMath({ numProblems }: QuickMath) {
     const correctAnswer = calculateAnswer(problemList[index]);
     const isCorrect = num === correctAnswer;
 
-    const newResults = [...results];
-    newResults[index] = isCorrect ? "correct" : "incorrect";
-    setResults(newResults);
-
-    const newSubmissions = [...submissions];
-    newSubmissions[index] = num;
-    setSubmissions(newSubmissions);
-
-    setIndex(index + 1);
+    setGameState((prev) => ({
+      ...prev,
+      results: prev.results.map((r, i) =>
+        i === index ? (isCorrect ? "correct" : "incorrect") : r,
+      ),
+      submissions: prev.submissions.map((s, i) => (i === index ? num : s)),
+      index: prev.index + 1,
+    }));
   };
 
   return (
