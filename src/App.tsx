@@ -81,11 +81,9 @@ function App() {
           </section>
         </div>
       ) : (
-        <div className="game-view">
-          <Suspense fallback={<div>Loading game...</div>}>
-            {renderGame()}
-          </Suspense>
-        </div>
+        <Suspense fallback={<div>Loading game...</div>}>
+          {renderGame()}
+        </Suspense>
       )}
     </>
   );
