@@ -3,7 +3,7 @@ import "./App.scss";
 
 const QuickMath = lazy(() => import("./assets/games/quick-math/QuickMath"));
 
-type GameId =
+export type GameId =
   | "quick-math"
   | "subtract"
   | "prev-image"
@@ -42,7 +42,7 @@ function App() {
   const renderGame = () => {
     switch (currentGame) {
       case "quick-math":
-        return <QuickMath />;
+        return <QuickMath gameEnd={() => setCurrentGame(null)} />;
       default:
         return null;
     }

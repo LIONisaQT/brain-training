@@ -89,7 +89,7 @@
 
   .modal-bg {
     position: absolute;
-    background-color: rgba(0.2, 0.2, 0.2, 0.2);
+    background-color: rgba(0.2, 0.2, 0.2, 0.5);
     width: 100%;
     height: 100%;
   }
@@ -121,9 +121,15 @@
 
     .modal-button-container {
       display: flex;
-      flex-direction: row;
-      justify-content: center;
+      flex-direction: column;
       gap: 2px;
+
+      .button-row {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        gap: 2px;
+      }
 
       .modal-button {
         flex: 1;

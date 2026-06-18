@@ -15,6 +15,7 @@ const DEFAULT_SET_LIST = 20;
 
 interface QuickMath {
   numProblems?: number;
+  gameEnd: () => void;
 }
 
 interface GameState {
@@ -33,7 +34,7 @@ function initializeGame(numProblems: number): GameState {
   };
 }
 
-function QuickMath({ numProblems }: QuickMath) {
+function QuickMath({ numProblems, gameEnd }: QuickMath) {
   const numProblemsValue = numProblems ?? DEFAULT_SET_LIST;
 
   const [gameState, setGameState] = useState<GameState>(() =>
@@ -192,15 +193,22 @@ function QuickMath({ numProblems }: QuickMath) {
               </section>
             </section>
             <section className="modal-button-container">
-              <button
-                className="modal-button"
-                onClick={() => setSeeModal(false)}
-              >
-                Review
-              </button>
-              <button className="modal-button" onClick={() => resetGame()}>
-                Restart
-              </button>
+              <div className="button-row">
+                <button
+                  className="modal-button"
+                  onClick={() => setSeeModal(false)}
+                >
+                  Review
+                </button>
+                <button className="modal-button" onClick={() => resetGame()}>
+                  Restart
+                </button>
+              </div>
+              <div className="button-row">
+                <button className="modal-button" onClick={() => gameEnd()}>
+                  Main Menu
+                </button>
+              </div>
             </section>
           </div>
         </div>
