@@ -1,5 +1,6 @@
 import { useState, Suspense, lazy } from "react";
 import "./App.scss";
+import CountDown from "./assets/games/count-down/CountDown";
 
 const QuickMath = lazy(() => import("./assets/games/quick-math/QuickMath"));
 
@@ -43,6 +44,8 @@ function App() {
     switch (currentGame) {
       case "quick-math":
         return <QuickMath gameEnd={() => setCurrentGame(null)} />;
+      case "subtract":
+        return <CountDown />;
       default:
         return null;
     }
@@ -64,7 +67,10 @@ function App() {
                 >
                   <p className="game-title">{gameList["quick-math"].name}</p>
                 </button>
-                <button className="grid__item grid__item--2">
+                <button
+                  className="grid__item grid__item--2"
+                  onClick={() => setCurrentGame("subtract")}
+                >
                   <p className="game-title">{gameList["subtract"].name}</p>
                 </button>
                 <button className="grid__item grid__item--3">

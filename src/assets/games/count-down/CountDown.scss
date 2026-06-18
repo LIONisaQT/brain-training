@@ -1,0 +1,56 @@
+.prompt {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background-color: white;
+  padding: 20px;
+  font-size: 16pt;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.numbers {
+  position: fixed;
+  top: 17vh;
+  left: 0;
+  right: 0;
+  height: var(--countdown-item-height);
+  overflow: hidden;
+  text-align: center;
+  --countdown-item-height: 6rem;
+}
+
+.numbers-list {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.4s ease;
+  will-change: transform;
+}
+
+.number-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 56pt;
+  line-height: 60pt;
+  height: var(--countdown-item-height);
+  margin: 0;
+}
+
+.number-cover {
+  position: absolute;
+  inset: 0;
+  background: black;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.number-cover.visible {
+  opacity: 1;
+}
