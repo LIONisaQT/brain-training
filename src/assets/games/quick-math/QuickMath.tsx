@@ -11,6 +11,7 @@ import {
 import { Checkmark, Cross } from "../../../utils/svgs";
 import { formatTime } from "../../../utils/useStopwatch";
 import { useResponseTimer } from "../../../utils/useResponseTimer";
+import EndGameModal from "../../elements/EndGameModal/EndGameModal";
 
 const DEFAULT_SET_LIST = 20;
 
@@ -55,8 +56,6 @@ function QuickMath({ numProblems, gameEnd }: QuickMath) {
     reset: resetResponseTimer,
     totalTime,
   } = useResponseTimer();
-  const finalElapsedMs = totalTime;
-  const avgTimeMs = finalElapsedMs / numProblemsValue;
 
   const [seeModal, setSeeModal] = useState(true);
 
@@ -177,52 +176,23 @@ function QuickMath({ numProblems, gameEnd }: QuickMath) {
       </div>
       <NumberCanvas onSubmit={onSubmit} isComplete={isQuizComplete} />
       {isQuizComplete && seeModal && (
-        <div className="modal-element">
-          <div className="modal-bg"></div>
-          <div className="modal">
-            <section className="modal-content">
-              <h1 className="modal-title">Quiz Complete</h1>
-              <section className="modal-body">
-                <div className="modal-body-line">
-                  <p>Time</p>
-                  <p>{formatTime(finalElapsedMs)}</p>
-                </div>
-                <div className="modal-body-line">
-                  <p>Avg time</p>
-                  <p>{formatTime(avgTimeMs)}</p>
-                </div>
-                <div className="modal-body-line">
-                  <p>Correct</p>
-                  <p>
-                    {
-                      gameState.results.filter((res) => res === "correct")
-                        .length
-                    }{" "}
-                    / {gameState.problemList.length}
-                  </p>
-                </div>
-              </section>
-            </section>
-            <section className="modal-button-container">
-              <div className="button-row">
-                <button
-                  className="modal-button"
-                  onClick={() => setSeeModal(false)}
-                >
-                  Review
-                </button>
-                <button className="modal-button" onClick={() => resetGame()}>
-                  Restart
-                </button>
-              </div>
-              <div className="button-row">
-                <button className="modal-button" onClick={() => gameEnd()}>
-                  Main Menu
-                </button>
-              </div>
-            </section>
-          </div>
-        </div>
+        <EndGameModal
+          stats={[
+            { statName: "Time", statValue: formatTime(totalTime) },
+            {
+              statName: "Avg time",
+              statValue: formatTime(totalTime / numProblemsValue),
+            },
+            {
+              statName: "Correct",
+              statValue: `${gameState.results.filter((res) => res === "correct").length} / ${gameState.problemList.length}`,
+            },
+          ]}
+          hasReview={true}
+          reviewGame={() => setSeeModal(false)}
+          resetGame={resetGame}
+          gameEnd={gameEnd}
+        />
       )}
       {isQuizComplete && !seeModal && (
         <div className="restart-button">

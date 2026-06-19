@@ -4,6 +4,7 @@ import { getCountdownConfig } from "./count-down-utils";
 import { formatTime } from "../../../utils/useStopwatch";
 import { useResponseTimer } from "../../../utils/useResponseTimer";
 import { useCallback, useEffect, useRef, useState } from "react";
+import EndGameModal from "../../elements/EndGameModal/EndGameModal";
 
 const COVER_DELAY_MS = 500;
 const MAX_INCORRECT_ATTEMPTS = 3;
@@ -90,9 +91,6 @@ function CountDown({ gameEnd }: CountDown) {
     });
   };
 
-  const formattedTotalTime = formatTime(totalTime);
-  const formattedAverageTime = formatTime(averageTime);
-
   return (
     <>
       <section className="prompt">
@@ -121,36 +119,15 @@ function CountDown({ gameEnd }: CountDown) {
       </section>
       <NumberCanvas onSubmit={onSubmit} isComplete={isQuizComplete} />
       {isQuizComplete && (
-        <div className="modal-element">
-          <div className="modal-bg"></div>
-          <div className="modal">
-            <section className="modal-content">
-              <h1 className="modal-title">Quiz Complete</h1>
-              <section className="modal-body">
-                <div className="modal-body-line">
-                  <p>Total time</p>
-                  <p>{formattedTotalTime}</p>
-                </div>
-                <div className="modal-body-line">
-                  <p>Average time</p>
-                  <p>{formattedAverageTime}</p>
-                </div>
-              </section>
-            </section>
-            <section className="modal-button-container">
-              <div className="button-row">
-                <button className="modal-button" onClick={resetGame}>
-                  Restart
-                </button>
-              </div>
-              <div className="button-row">
-                <button className="modal-button" onClick={gameEnd}>
-                  Main Menu
-                </button>
-              </div>
-            </section>
-          </div>
-        </div>
+        <EndGameModal
+          stats={[
+            { statName: "Total time", statValue: formatTime(totalTime) },
+            { statName: "Average time", statValue: formatTime(averageTime) },
+          ]}
+          hasReview={false}
+          resetGame={resetGame}
+          gameEnd={gameEnd}
+        />
       )}
     </>
   );
