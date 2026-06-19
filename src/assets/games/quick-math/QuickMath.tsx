@@ -9,7 +9,8 @@ import {
   getDisplayOperation,
 } from "./quick-math-utils";
 import { Checkmark, Cross } from "../../../utils/svgs";
-import { formatTime, useStopwatch } from "../../../utils/useStopwatch";
+import { formatTime } from "../../../utils/useStopwatch";
+import { useResponseTimer } from "../../../utils/useResponseTimer";
 
 const DEFAULT_SET_LIST = 20;
 
@@ -48,8 +49,13 @@ function QuickMath({ numProblems, gameEnd }: QuickMath) {
 
   const isQuizComplete = results.every((result) => result !== "unanswered");
 
-  const { startStopwatch, elapsedMs: finalElapsedMs } =
-    useStopwatch(isQuizComplete);
+  const {
+    start: startResponseTimer,
+    stop: stopResponseTimer,
+    reset: resetResponseTimer,
+    totalTime,
+  } = useResponseTimer();
+  const finalElapsedMs = totalTime;
   const avgTimeMs = finalElapsedMs / numProblemsValue;
 
   const [seeModal, setSeeModal] = useState(true);
@@ -57,9 +63,9 @@ function QuickMath({ numProblems, gameEnd }: QuickMath) {
   const resetGame = useCallback(() => {
     isCompleteRef.current = false;
     setSeeModal(true);
-    startStopwatch();
+    resetResponseTimer();
     setGameState(initializeGame(numProblemsValue));
-  }, [numProblemsValue, startStopwatch]);
+  }, [numProblemsValue, resetResponseTimer]);
 
   useEffect(() => {
     if (containerRef.current) {
@@ -124,9 +130,14 @@ function QuickMath({ numProblems, gameEnd }: QuickMath) {
     const correctAnswer = calculateAnswer(problemList[index]);
     const isCorrect = num === correctAnswer;
 
-    // TODO: Remove this once a proper countdown/ready screen is added before the quiz starts
+    const nextIndex = index + 1;
+
     if (index === 0) {
-      startStopwatch();
+      startResponseTimer();
+    }
+
+    if (nextIndex >= numProblemsValue) {
+      stopResponseTimer();
     }
 
     setGameState((prev) => ({
@@ -135,7 +146,7 @@ function QuickMath({ numProblems, gameEnd }: QuickMath) {
         i === index ? (isCorrect ? "correct" : "incorrect") : r,
       ),
       submissions: prev.submissions.map((s, i) => (i === index ? num : s)),
-      index: prev.index + 1,
+      index: nextIndex,
     }));
   };
 
