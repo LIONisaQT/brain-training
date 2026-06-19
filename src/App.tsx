@@ -45,7 +45,7 @@ function App() {
       case "quick-math":
         return <QuickMath gameEnd={() => setCurrentGame(null)} />;
       case "subtract":
-        return <CountDown />;
+        return <CountDown gameEnd={() => setCurrentGame(null)} />;
       default:
         return null;
     }

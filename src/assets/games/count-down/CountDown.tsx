@@ -1,20 +1,33 @@
 import "./CountDown.scss";
 import NumberCanvas from "../quick-math/NumberCanvas";
 import { getCountdownConfig } from "./count-down-utils";
-import { useEffect, useRef, useState } from "react";
+import { formatTime } from "../../../utils/useStopwatch";
+import { useResponseTimer } from "../../../utils/useResponseTimer";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 const COVER_DELAY_MS = 500;
 const MAX_INCORRECT_ATTEMPTS = 3;
 const ROUNDS = 10;
 
-function CountDown() {
-  const [{ startingNumber, subtractor, rounds }] = useState(() =>
-    getCountdownConfig(ROUNDS),
-  );
+interface CountDown {
+  gameEnd: () => void;
+}
+
+function CountDown({ gameEnd }: CountDown) {
+  const [config, setConfig] = useState(() => getCountdownConfig(ROUNDS));
+  const { startingNumber, subtractor, rounds } = config;
   const [numbers, setNumbers] = useState<number[]>([startingNumber]);
   const [isCovered, setIsCovered] = useState(false);
   const [incorrectCount, setIncorrectCount] = useState(0);
   const coverTimerRef = useRef<number | null>(null);
+  const {
+    start: startResponseTimer,
+    stop: stopResponseTimer,
+    reset: resetResponseTimer,
+    isRunning: isResponseTimerRunning,
+    totalTime,
+    averageTime,
+  } = useResponseTimer();
 
   const currentValue = numbers[numbers.length - 1];
   const isQuizComplete = numbers.length - 1 >= rounds;
@@ -26,21 +39,44 @@ function CountDown() {
     }
   };
 
-  const scheduleCover = () => {
+  const resetGame = () => {
+    clearCoverTimer();
+    resetResponseTimer();
+
+    const nextConfig = getCountdownConfig(ROUNDS);
+    setConfig(nextConfig);
+    setNumbers([nextConfig.startingNumber]);
+    setIncorrectCount(0);
+    setIsCovered(false);
+  };
+
+  const scheduleCover = useCallback(() => {
     clearCoverTimer();
     coverTimerRef.current = window.setTimeout(() => {
       setIsCovered(true);
       coverTimerRef.current = null;
     }, COVER_DELAY_MS);
-  };
+  }, []);
+
+  useEffect(() => {
+    return () => clearCoverTimer();
+  }, []);
 
   const onSubmit = (num: number) => {
     const isCorrect = currentValue - subtractor === num;
     if (isCorrect) {
+      if (isResponseTimerRunning) {
+        stopResponseTimer();
+      }
+
       setNumbers((prev) => [...prev, num]);
       setIncorrectCount(0);
       setIsCovered(false);
-      scheduleCover();
+
+      if (numbers.length < rounds) {
+        startResponseTimer();
+        scheduleCover();
+      }
       return;
     }
 
@@ -54,11 +90,8 @@ function CountDown() {
     });
   };
 
-  useEffect(() => {
-    return () => {
-      clearCoverTimer();
-    };
-  }, []);
+  const formattedTotalTime = formatTime(totalTime);
+  const formattedAverageTime = formatTime(averageTime);
 
   return (
     <>
@@ -87,6 +120,38 @@ function CountDown() {
         <div className={`number-cover${isCovered ? " visible" : ""}`} />
       </section>
       <NumberCanvas onSubmit={onSubmit} isComplete={isQuizComplete} />
+      {isQuizComplete && (
+        <div className="modal-element">
+          <div className="modal-bg"></div>
+          <div className="modal">
+            <section className="modal-content">
+              <h1 className="modal-title">Quiz Complete</h1>
+              <section className="modal-body">
+                <div className="modal-body-line">
+                  <p>Total time</p>
+                  <p>{formattedTotalTime}</p>
+                </div>
+                <div className="modal-body-line">
+                  <p>Average time</p>
+                  <p>{formattedAverageTime}</p>
+                </div>
+              </section>
+            </section>
+            <section className="modal-button-container">
+              <div className="button-row">
+                <button className="modal-button" onClick={resetGame}>
+                  Restart
+                </button>
+              </div>
+              <div className="button-row">
+                <button className="modal-button" onClick={gameEnd}>
+                  Main Menu
+                </button>
+              </div>
+            </section>
+          </div>
+        </div>
+      )}
     </>
   );
 }
