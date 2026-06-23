@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./Correct.scss";
 
-interface Position {
+export interface Position {
   x: number;
   y: number;
 }
