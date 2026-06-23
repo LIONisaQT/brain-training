@@ -6,8 +6,15 @@ import {
   type PositionedNumber,
 } from "./high-touch-utils";
 import Correct, { type Position } from "../../elements/Feedback/Correct";
+import EndGameModal from "../../elements/EndGameModal/EndGameModal";
 
-function HighTouch() {
+const MAX_ROUNDS = 8;
+
+interface HighTouch {
+  gameEnd: () => void;
+}
+
+function HighTouch({ gameEnd }: HighTouch) {
   const [numbers, setNums] = useState<PositionedNumber[]>([]);
   const [round, setRound] = useState(1);
   const [highest, setHighest] = useState(0);
@@ -26,6 +33,7 @@ function HighTouch() {
   const resetGame = useCallback(() => {
     getNewNumbers();
     setRound(1);
+    shouldPlayFeedback(false);
   }, []);
 
   useEffect(() => {
@@ -40,11 +48,6 @@ function HighTouch() {
     const x = rect.left + rect.width / 2 + window.scrollX;
     const y = rect.top + rect.height / 2 + window.scrollY;
     setFeedbackPos({ x, y });
-
-    onCorrect();
-  };
-
-  const onCorrect = () => {
     shouldPlayFeedback(true);
   };
 
@@ -77,6 +80,14 @@ function HighTouch() {
         position={feedbackPos}
         onComplete={feedbackFinished}
       />
+      {round === MAX_ROUNDS && (
+        <EndGameModal
+          stats={[]}
+          hasReview={false}
+          resetGame={resetGame}
+          gameEnd={gameEnd}
+        />
+      )}
     </>
   );
 }

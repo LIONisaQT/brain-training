@@ -48,7 +48,7 @@ function App() {
       case "subtract":
         return <CountDown gameEnd={() => setCurrentGame(null)} />;
       case "touch-highest":
-        return <HighTouch />;
+        return <HighTouch gameEnd={() => setCurrentGame(null)} />;
       default:
         return null;
     }
