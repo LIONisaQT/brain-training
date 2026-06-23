@@ -13,7 +13,8 @@ interface CorrectProps {
 }
 
 const IN_MS = 150;
-const HOLD_MS = 250;
+const DRAW_MS = 220;
+const POST_DRAW_MS = 80;
 const OUT_MS = 150;
 
 function Correct({ shouldPlay, position, onComplete }: CorrectProps) {
@@ -32,14 +33,17 @@ function Correct({ shouldPlay, position, onComplete }: CorrectProps) {
       setVisible(true);
       setPhase("in");
 
-      const t1 = window.setTimeout(() => setPhase("out"), IN_MS + HOLD_MS);
+      const t1 = window.setTimeout(
+        () => setPhase("out"),
+        IN_MS + DRAW_MS + POST_DRAW_MS,
+      );
       const t2 = window.setTimeout(
         () => {
           setVisible(false);
           setPhase("idle");
           onComplete();
         },
-        IN_MS + HOLD_MS + OUT_MS,
+        IN_MS + DRAW_MS + POST_DRAW_MS + OUT_MS,
       );
 
       timeouts.current.push(t1, t2);
@@ -66,24 +70,8 @@ function Correct({ shouldPlay, position, onComplete }: CorrectProps) {
           className="check-svg"
           xmlns="http://www.w3.org/2000/svg"
         >
-          <circle
-            className="circle"
-            cx="26"
-            cy="26"
-            r="24"
-            fill="none"
-            stroke="#28a745"
-            strokeWidth="3"
-          />
-          <path
-            className="checkmark"
-            fill="none"
-            stroke="#28a745"
-            strokeWidth="4"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M14 27l7 7 16-16"
-          />
+          <circle className="fill" cx="26" cy="26" r="24" />
+          <path className="checkmark" d="M14 27l7 7 16-16" />
         </svg>
       </div>
     </div>
