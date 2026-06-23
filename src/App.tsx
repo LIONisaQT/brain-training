@@ -1,6 +1,7 @@
 import { useState, Suspense, lazy } from "react";
 import "./App.scss";
 import CountDown from "./assets/games/count-down/CountDown";
+import HighTouch from "./assets/games/high-touch/HighTouch";
 
 const QuickMath = lazy(() => import("./assets/games/quick-math/QuickMath"));
 
@@ -46,6 +47,8 @@ function App() {
         return <QuickMath gameEnd={() => setCurrentGame(null)} />;
       case "subtract":
         return <CountDown gameEnd={() => setCurrentGame(null)} />;
+      case "touch-highest":
+        return <HighTouch />;
       default:
         return null;
     }
@@ -76,7 +79,10 @@ function App() {
                 <button className="grid__item grid__item--3">
                   <p className="game-title">{gameList["prev-image"].name}</p>
                 </button>
-                <button className="grid__item grid__item--4">
+                <button
+                  className="grid__item grid__item--4"
+                  onClick={() => setCurrentGame("touch-highest")}
+                >
                   <p className="game-title">{gameList["touch-highest"].name}</p>
                 </button>
                 <button className="grid__item grid__item--5">
