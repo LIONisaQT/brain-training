@@ -12,6 +12,9 @@ import { Checkmark, Cross } from "../../../utils/svgs";
 import { formatTime } from "../../../utils/useStopwatch";
 import { useResponseTimer } from "../../../utils/useResponseTimer";
 import EndGameModal from "../../elements/EndGameModal/EndGameModal";
+import type { Feedback } from "../../elements/Feedback/Feedback";
+import Correct from "../../elements/Feedback/Correct";
+import Incorrect from "../../elements/Feedback/Incorrect";
 
 const DEFAULT_SET_LIST = 20;
 
@@ -48,6 +51,13 @@ function QuickMath({ numProblems, gameEnd }: QuickMath) {
   const containerRef = useRef<HTMLDivElement>(null);
   const isCompleteRef = useRef(false);
 
+  const [submittedNum, setSubmittedNum] = useState(0);
+  const [feedback, setFeedback] = useState<Feedback>({
+    shouldPlay: false,
+    isCorrect: false,
+    position: { x: 0, y: 0 },
+  });
+
   const isQuizComplete = results.every((result) => result !== "unanswered");
 
   const {
@@ -64,6 +74,11 @@ function QuickMath({ numProblems, gameEnd }: QuickMath) {
     setSeeModal(true);
     resetResponseTimer();
     setGameState(initializeGame(numProblemsValue));
+    setFeedback({
+      shouldPlay: false,
+      isCorrect: false,
+      position: { x: 0, y: 0 },
+    });
   }, [numProblemsValue, resetResponseTimer]);
 
   useEffect(() => {
@@ -128,6 +143,21 @@ function QuickMath({ numProblems, gameEnd }: QuickMath) {
   const onSubmit = (num: number) => {
     const correctAnswer = calculateAnswer(problemList[index]);
     const isCorrect = num === correctAnswer;
+    setSubmittedNum(num);
+
+    setFeedback({
+      shouldPlay: true,
+      isCorrect,
+      position: { x: "50%", y: "25%" },
+    });
+  };
+
+  const feedbackFinished = (wasCorrect: boolean) => {
+    setFeedback({
+      shouldPlay: false,
+      isCorrect: false,
+      position: { x: 0, y: 0 },
+    });
 
     const nextIndex = index + 1;
 
@@ -142,9 +172,11 @@ function QuickMath({ numProblems, gameEnd }: QuickMath) {
     setGameState((prev) => ({
       ...prev,
       results: prev.results.map((r, i) =>
-        i === index ? (isCorrect ? "correct" : "incorrect") : r,
+        i === index ? (wasCorrect ? "correct" : "incorrect") : r,
       ),
-      submissions: prev.submissions.map((s, i) => (i === index ? num : s)),
+      submissions: prev.submissions.map((s, i) =>
+        i === index ? submittedNum : s,
+      ),
       index: nextIndex,
     }));
   };
@@ -194,6 +226,16 @@ function QuickMath({ numProblems, gameEnd }: QuickMath) {
           gameEnd={gameEnd}
         />
       )}
+      <Correct
+        shouldPlay={feedback.shouldPlay && feedback.isCorrect}
+        position={feedback.position}
+        onComplete={() => feedbackFinished(true)}
+      />
+      <Incorrect
+        shouldPlay={feedback.shouldPlay && !feedback.isCorrect}
+        position={feedback.position}
+        onComplete={() => feedbackFinished(false)}
+      />
       {isQuizComplete && !seeModal && (
         <div className="restart-button">
           <button onClick={resetGame}>🔄</button>

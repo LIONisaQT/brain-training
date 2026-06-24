@@ -5,6 +5,9 @@ import { formatTime } from "../../../utils/useStopwatch";
 import { useResponseTimer } from "../../../utils/useResponseTimer";
 import { useCallback, useEffect, useRef, useState } from "react";
 import EndGameModal from "../../elements/EndGameModal/EndGameModal";
+import Correct from "../../elements/Feedback/Correct";
+import type { Feedback } from "../../elements/Feedback/Feedback";
+import Incorrect from "../../elements/Feedback/Incorrect";
 
 const COVER_DELAY_MS = 500;
 const MAX_INCORRECT_ATTEMPTS = 3;
@@ -30,6 +33,12 @@ function CountDown({ gameEnd }: CountDown) {
     averageTime,
   } = useResponseTimer();
 
+  const [feedback, setFeedback] = useState<Feedback>({
+    shouldPlay: false,
+    isCorrect: false,
+    position: { x: 0, y: 0 },
+  });
+
   const currentValue = numbers[numbers.length - 1];
   const isQuizComplete = numbers.length - 1 >= rounds;
 
@@ -49,6 +58,11 @@ function CountDown({ gameEnd }: CountDown) {
     setNumbers([nextConfig.startingNumber]);
     setIncorrectCount(0);
     setIsCovered(false);
+    setFeedback({
+      shouldPlay: false,
+      isCorrect: false,
+      position: { x: 0, y: 0 },
+    });
   };
 
   const scheduleCover = useCallback(() => {
@@ -65,12 +79,26 @@ function CountDown({ gameEnd }: CountDown) {
 
   const onSubmit = (num: number) => {
     const isCorrect = currentValue - subtractor === num;
-    if (isCorrect) {
+    setFeedback({
+      shouldPlay: true,
+      isCorrect,
+      position: { x: "50%", y: "23vh" },
+    });
+  };
+
+  const feedbackFinished = (wasCorrect: boolean) => {
+    setFeedback({
+      shouldPlay: false,
+      isCorrect: false,
+      position: { x: 0, y: 0 },
+    });
+
+    if (wasCorrect) {
       if (isResponseTimerRunning) {
         stopResponseTimer();
       }
 
-      setNumbers((prev) => [...prev, num]);
+      setNumbers((prev) => [...prev, currentValue - subtractor]);
       setIncorrectCount(0);
       setIsCovered(false);
 
@@ -118,6 +146,16 @@ function CountDown({ gameEnd }: CountDown) {
         <div className={`number-cover${isCovered ? " visible" : ""}`} />
       </section>
       <NumberCanvas onSubmit={onSubmit} isComplete={isQuizComplete} />
+      <Correct
+        shouldPlay={feedback.shouldPlay && feedback.isCorrect}
+        position={feedback.position}
+        onComplete={() => feedbackFinished(true)}
+      />
+      <Incorrect
+        shouldPlay={feedback.shouldPlay && !feedback.isCorrect}
+        position={feedback.position}
+        onComplete={() => feedbackFinished(false)}
+      />
       {isQuizComplete && (
         <EndGameModal
           stats={[

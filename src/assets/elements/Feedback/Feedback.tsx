@@ -2,8 +2,8 @@ import { useEffect, useRef, useState, type CSSProperties } from "react";
 import "./Feedback.scss";
 
 export interface Position {
-  x: number;
-  y: number;
+  x: number | string;
+  y: number | string;
 }
 
 export interface Feedback {
