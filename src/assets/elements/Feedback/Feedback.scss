@@ -1,0 +1,93 @@
+.feedback {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.check-svg {
+  width: 64px;
+  height: 64px;
+  display: block;
+  overflow: visible;
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+}
+
+/* Filled circle uses CSS variable --fill-color */
+.check-svg .fill {
+  transform-origin: 50% 50%;
+  fill: var(--fill-color, #28a745);
+  opacity: 0;
+  transform-box: fill-box;
+}
+
+/* Icon (check or X) uses variable --icon-stroke */
+.check-svg .icon {
+  stroke: var(--icon-stroke, #fff);
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+  stroke-dasharray: 60;
+  stroke-dashoffset: 60;
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+}
+
+.feedback.in .check-svg .fill {
+  animation: fillIn 150ms cubic-bezier(0.2, 0.9, 0.3, 1) forwards;
+  opacity: 1;
+}
+
+.feedback.in .check-svg .icon {
+  animation: draw 220ms cubic-bezier(0.2, 0.9, 0.3, 1) forwards 150ms;
+  opacity: 1;
+}
+
+.feedback.out .check-svg {
+  animation: fadeOut 150ms ease forwards;
+}
+
+@keyframes fillIn {
+  0% {
+    transform: scale(0.2);
+    opacity: 0;
+  }
+
+  60% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes draw {
+  0% {
+    stroke-dashoffset: 60;
+  }
+
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes fadeOut {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(0.2);
+    opacity: 0;
+  }
+}

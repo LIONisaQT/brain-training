@@ -6,20 +6,21 @@ interface Props {
   onComplete: () => void;
 }
 
-const CHECK_PATH = "M14 27l7 7 16-16";
-const GREEN = "#28a745";
+// Red filled circle with white X
+const X_PATH = "M16 16 L36 36 M36 16 L16 36";
+const RED = "#dc3545";
 
-function Correct({ shouldPlay, position, onComplete }: Props) {
+function Incorrect({ shouldPlay, position, onComplete }: Props) {
   return (
     <Feedback
       shouldPlay={shouldPlay}
       position={position}
       onComplete={onComplete}
-      fillColor={GREEN}
+      fillColor={RED}
       iconStroke="#fff"
-      pathD={CHECK_PATH}
+      pathD={X_PATH}
     />
   );
 }
 
-export default Correct;
+export default Incorrect;

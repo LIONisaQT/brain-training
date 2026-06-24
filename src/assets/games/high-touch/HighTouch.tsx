@@ -5,8 +5,10 @@ import {
   buildPositionedNumbers,
   type PositionedNumber,
 } from "./high-touch-utils";
-import Correct, { type Position } from "../../elements/Feedback/Correct";
+import Correct from "../../elements/Feedback/Correct";
+import Incorrect from "../../elements/Feedback/Incorrect";
 import EndGameModal from "../../elements/EndGameModal/EndGameModal";
+import type { Feedback } from "../../elements/Feedback/Feedback";
 
 const MAX_ROUNDS = 8;
 
@@ -18,8 +20,11 @@ function HighTouch({ gameEnd }: HighTouch) {
   const [numbers, setNums] = useState<PositionedNumber[]>([]);
   const [round, setRound] = useState(1);
   const [highest, setHighest] = useState(0);
-  const [playFeedback, shouldPlayFeedback] = useState(false);
-  const [feedbackPos, setFeedbackPos] = useState<Position>({ x: 0, y: 0 });
+  const [feedback, setFeedback] = useState<Feedback>({
+    shouldPlay: false,
+    isCorrect: false,
+    position: { x: 0, y: 0 },
+  });
 
   const getNewNumbers = () => {
     const newTotal = Math.floor(Math.random() * 2 + 9);
@@ -33,7 +38,11 @@ function HighTouch({ gameEnd }: HighTouch) {
   const resetGame = useCallback(() => {
     getNewNumbers();
     setRound(1);
-    shouldPlayFeedback(false);
+    setFeedback({
+      shouldPlay: false,
+      isCorrect: false,
+      position: { x: 0, y: 0 },
+    });
   }, []);
 
   useEffect(() => {
@@ -42,19 +51,28 @@ function HighTouch({ gameEnd }: HighTouch) {
   }, [resetGame]);
 
   const numClicked = (num: number, e: React.MouseEvent<HTMLButtonElement>) => {
-    if (num !== highest) return;
-
     const rect = e.currentTarget.getBoundingClientRect();
     const x = rect.left + rect.width / 2 + window.scrollX;
     const y = rect.top + rect.height / 2 + window.scrollY;
-    setFeedbackPos({ x, y });
-    shouldPlayFeedback(true);
+
+    setFeedback({
+      shouldPlay: true,
+      isCorrect: num === highest,
+      position: { x, y },
+    });
   };
 
-  const feedbackFinished = () => {
-    shouldPlayFeedback(false);
-    getNewNumbers();
-    setRound(round + 1);
+  const feedbackFinished = (wasCorrect: boolean) => {
+    setFeedback({
+      shouldPlay: false,
+      isCorrect: false,
+      position: { x: 0, y: 0 },
+    });
+
+    if (wasCorrect) {
+      getNewNumbers();
+      setRound(round + 1);
+    }
   };
 
   return (
@@ -76,9 +94,14 @@ function HighTouch({ gameEnd }: HighTouch) {
         </section>
       </div>
       <Correct
-        shouldPlay={playFeedback}
-        position={feedbackPos}
-        onComplete={feedbackFinished}
+        shouldPlay={feedback.shouldPlay && feedback.isCorrect}
+        position={feedback.position}
+        onComplete={() => feedbackFinished(true)}
+      />
+      <Incorrect
+        shouldPlay={feedback.shouldPlay && !feedback.isCorrect}
+        position={feedback.position}
+        onComplete={() => feedbackFinished(false)}
       />
       {round === MAX_ROUNDS && (
         <EndGameModal
