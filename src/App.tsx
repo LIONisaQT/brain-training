@@ -2,13 +2,14 @@ import { useState, Suspense, lazy } from "react";
 import "./App.scss";
 import CountDown from "./assets/games/count-down/CountDown";
 import HighTouch from "./assets/games/high-touch/HighTouch";
+import MathRecall from "./assets/games/math-recall/MathRecall";
 
 const QuickMath = lazy(() => import("./assets/games/quick-math/QuickMath"));
 
 export type GameId =
   | "quick-math"
   | "subtract"
-  | "prev-image"
+  | "math-recall"
   | "touch-highest"
   | "box-count"
   | "color-match";
@@ -24,8 +25,8 @@ const gameList: Record<GameId, Game> = {
   subtract: {
     name: "Count Down",
   },
-  "prev-image": {
-    name: "Image Recall",
+  "math-recall": {
+    name: "Recall",
   },
   "touch-highest": {
     name: "High Touch",
@@ -49,6 +50,8 @@ function App() {
         return <CountDown gameEnd={() => setCurrentGame(null)} />;
       case "touch-highest":
         return <HighTouch gameEnd={() => setCurrentGame(null)} />;
+      case "math-recall":
+        return <MathRecall />;
       default:
         return null;
     }
@@ -76,8 +79,11 @@ function App() {
                 >
                   <p className="game-title">{gameList["subtract"].name}</p>
                 </button>
-                <button className="grid__item grid__item--3">
-                  <p className="game-title">{gameList["prev-image"].name}</p>
+                <button
+                  className="grid__item grid__item--3"
+                  onClick={() => setCurrentGame("math-recall")}
+                >
+                  <p className="game-title">{gameList["math-recall"].name}</p>
                 </button>
                 <button
                   className="grid__item grid__item--4"

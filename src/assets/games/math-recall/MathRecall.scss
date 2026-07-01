@@ -1,0 +1,45 @@
+.visible {
+  display: block;
+}
+
+.hidden {
+  display: none;
+}
+
+.math-mode {
+  padding-top: 20vh;
+
+  .problem {
+    display: flex;
+    font-family: "Domine", serif;
+    font-weight: 600;
+    font-size: 56pt;
+    flex-direction: row;
+    gap: 4px;
+    justify-content: center;
+  }
+}
+
+.recall-mode {
+  padding-top: 20vh;
+
+  .prompt {
+    font-size: 18pt;
+  }
+
+  .options {
+    margin: 8px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+
+    .option {
+      font-family: "Domine", serif;
+      font-size: 40pt;
+      font-weight: 600;
+      padding: 16px 28px;
+      border: none;
+      color: rgb(80, 80, 80);
+    }
+  }
+}
