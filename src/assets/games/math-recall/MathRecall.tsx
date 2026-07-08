@@ -1,5 +1,5 @@
 import "./MathRecall.scss";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   calculateAnswer,
   generateProblems,
@@ -11,22 +11,41 @@ import { type Feedback } from "../../elements/Feedback/Feedback";
 import Correct from "../../elements/Feedback/Correct";
 import Incorrect from "../../elements/Feedback/Incorrect";
 import { generateOptions } from "./math-recall-utils";
+import EndGameModal from "../../elements/EndGameModal/EndGameModal";
 
-function MathRecall() {
+const MAX_ROUNDS = 2;
+
+interface MathRecall {
+  gameEnd: () => void;
+}
+
+function MathRecall({ gameEnd }: MathRecall) {
   const [isMathMode, setMathMode] = useState(true);
   const [problem, setProblem] = useState<Problem | null>(null);
   const [lastSolution, setLastSolution] = useState<number | null>(null);
-
+  const [round, setRound] = useState(0);
   const [feedback, setFeedback] = useState<Feedback>({
     shouldPlay: false,
     isCorrect: false,
     position: { x: 0, y: 0 },
   });
 
+  const resetGame = useCallback(() => {
+    setMathMode(true);
+    setProblem(generateProblems(1)[0]);
+    setLastSolution(null);
+    setRound(0);
+    setFeedback({
+      shouldPlay: false,
+      isCorrect: false,
+      position: { x: 0, y: 0 },
+    });
+  }, []);
+
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setProblem(generateProblems(1)[0]);
-  }, []);
+    resetGame();
+  }, [resetGame]);
 
   const onSubmit = (num: number) => {
     if (!problem) return;
@@ -63,6 +82,8 @@ function MathRecall() {
       }
       setMathMode(!shouldRecall);
     }
+
+    setRound(round + 1);
   };
 
   return (
@@ -84,6 +105,14 @@ function MathRecall() {
         position={feedback.position}
         onComplete={() => feedbackFinished(false)}
       />
+      {round === MAX_ROUNDS && (
+        <EndGameModal
+          stats={[]}
+          hasReview={false}
+          resetGame={resetGame}
+          gameEnd={gameEnd}
+        />
+      )}
     </>
   );
 }

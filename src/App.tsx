@@ -51,7 +51,7 @@ function App() {
       case "touch-highest":
         return <HighTouch gameEnd={() => setCurrentGame(null)} />;
       case "math-recall":
-        return <MathRecall />;
+        return <MathRecall gameEnd={() => setCurrentGame(null)} />;
       default:
         return null;
     }
