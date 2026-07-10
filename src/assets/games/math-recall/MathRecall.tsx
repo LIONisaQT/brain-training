@@ -13,7 +13,7 @@ import Incorrect from "../../elements/Feedback/Incorrect";
 import { generateOptions } from "./math-recall-utils";
 import EndGameModal from "../../elements/EndGameModal/EndGameModal";
 
-const MAX_ROUNDS = 2;
+const MAX_ROUNDS = 10;
 
 interface MathRecall {
   gameEnd: () => void;
