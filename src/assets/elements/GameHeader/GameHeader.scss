@@ -1,0 +1,18 @@
+.game-header {
+  position: relative;
+  padding-top: 12px;
+
+  .back-button {
+    position: fixed;
+    top: 10px;
+    left: 6px;
+    background-color: transparent;
+    border: none;
+  }
+
+  .game-title {
+    color: black;
+    font-size: 24pt;
+    font-weight: 600;
+  }
+}

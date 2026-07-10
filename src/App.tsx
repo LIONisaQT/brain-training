@@ -3,6 +3,7 @@ import "./App.scss";
 import CountDown from "./assets/games/count-down/CountDown";
 import HighTouch from "./assets/games/high-touch/HighTouch";
 import MathRecall from "./assets/games/math-recall/MathRecall";
+import GameHeader from "./assets/elements/GameHeader/GameHeader";
 
 const QuickMath = lazy(() => import("./assets/games/quick-math/QuickMath"));
 
@@ -100,6 +101,10 @@ function App() {
         </div>
       ) : (
         <Suspense fallback={<div>Loading game...</div>}>
+          <GameHeader
+            onBackClicked={() => setCurrentGame(null)}
+            gameTitle={gameList[currentGame].name}
+          />
           {renderGame()}
         </Suspense>
       )}
