@@ -4,6 +4,7 @@ import CountDown from "./assets/games/count-down/CountDown";
 import HighTouch from "./assets/games/high-touch/HighTouch";
 import MathRecall from "./assets/games/math-recall/MathRecall";
 import GameHeader from "./assets/elements/GameHeader/GameHeader";
+import HiddenMath from "./assets/games/hidden-math/HiddenMath";
 
 const QuickMath = lazy(() => import("./assets/games/quick-math/QuickMath"));
 
@@ -13,7 +14,8 @@ export type GameId =
   | "math-recall"
   | "touch-highest"
   | "box-count"
-  | "color-match";
+  | "color-match"
+  | "hidden-math";
 
 interface Game {
   name: string;
@@ -38,6 +40,9 @@ const gameList: Record<GameId, Game> = {
   "color-match": {
     name: "Color Match",
   },
+  "hidden-math": {
+    name: "Hidden Math",
+  },
 };
 
 function App() {
@@ -53,6 +58,8 @@ function App() {
         return <HighTouch gameEnd={() => setCurrentGame(null)} />;
       case "math-recall":
         return <MathRecall gameEnd={() => setCurrentGame(null)} />;
+      case "hidden-math":
+        return <HiddenMath gameEnd={() => setCurrentGame(null)} />;
       default:
         return null;
     }
@@ -92,8 +99,11 @@ function App() {
                 >
                   <p className="game-title">{gameList["touch-highest"].name}</p>
                 </button>
-                <button className="grid__item grid__item--5">
-                  <p className="game-title">{gameList["box-count"].name}</p>
+                <button
+                  className="grid__item grid__item--5"
+                  onClick={() => setCurrentGame("hidden-math")}
+                >
+                  <p className="game-title">{gameList["hidden-math"].name}</p>
                 </button>
               </div>
             </div>
