@@ -13,31 +13,38 @@ export type GameId =
   | "subtract"
   | "math-recall"
   | "touch-highest"
-  | "color-match"
   | "hidden-math";
 
 interface Game {
   name: string;
+  description?: string;
 }
 
 const gameList: Record<GameId, Game> = {
   "quick-math": {
-    name: "Quick Math",
+    name: "Rapid Math",
+    description:
+      "Race through a fast-paced series of arithmetic challenges before the clock runs out.",
   },
   subtract: {
-    name: "Count Down",
+    name: "Countdown Rush",
+    description:
+      "Keep subtracting the target number as quickly and accurately as possible.",
   },
   "math-recall": {
-    name: "Recall",
+    name: "Memory Math",
+    description:
+      "Solve each problem fast, but keep the previous answer in mind to stay on track.",
   },
   "touch-highest": {
-    name: "High Touch",
-  },
-  "color-match": {
-    name: "Color Match",
+    name: "Peak Finder",
+    description:
+      "Spot the highest number in a whirlwind of values before time slips away.",
   },
   "hidden-math": {
-    name: "Hidden Math",
+    name: "Flash Math",
+    description:
+      "Catch quick glimpses of math problems and solve them before they disappear.",
   },
 };
 
