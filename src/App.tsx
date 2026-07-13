@@ -1,19 +1,18 @@
 import { useState, Suspense, lazy } from "react";
 import "./App.scss";
-import CountDown from "./assets/games/count-down/CountDown";
-import HighTouch from "./assets/games/high-touch/HighTouch";
-import MathRecall from "./assets/games/math-recall/MathRecall";
 import GameHeader from "./assets/elements/GameHeader/GameHeader";
-import HiddenMath from "./assets/games/hidden-math/HiddenMath";
 
 const QuickMath = lazy(() => import("./assets/games/quick-math/QuickMath"));
+const CountDown = lazy(() => import("./assets/games/count-down/CountDown"));
+const HighTouch = lazy(() => import("./assets/games/high-touch/HighTouch"));
+const MathRecall = lazy(() => import("./assets/games/math-recall/MathRecall"));
+const HiddenMath = lazy(() => import("./assets/games/hidden-math/HiddenMath"));
 
 export type GameId =
   | "quick-math"
   | "subtract"
   | "math-recall"
   | "touch-highest"
-  | "box-count"
   | "color-match"
   | "hidden-math";
 
@@ -33,9 +32,6 @@ const gameList: Record<GameId, Game> = {
   },
   "touch-highest": {
     name: "High Touch",
-  },
-  "box-count": {
-    name: "Boxing",
   },
   "color-match": {
     name: "Color Match",
