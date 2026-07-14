@@ -81,13 +81,13 @@ function RangeFinder({ gameEnd }: RangeFinder) {
         </section>
         <section className="options">
           <button className="range-button" onClick={() => submitSolution("<")}>
-            Less than
+            {"Less than ( < )"}
           </button>
           <button className="range-button" onClick={() => submitSolution("=")}>
-            Equal to
+            {"Equal to ( = )"}
           </button>
           <button className="range-button" onClick={() => submitSolution(">")}>
-            Greater than
+            {"Greater than ( > )"}
           </button>
         </section>
       </div>
