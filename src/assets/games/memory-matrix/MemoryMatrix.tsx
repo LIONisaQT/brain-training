@@ -136,7 +136,11 @@ function MemoryMatrix() {
                   key={key}
                   className={`grid-item ${active && isRevealing ? "active" : ""} ${cellState ?? ""}`.trim()}
                   onClick={() => onCellClicked(rowIndex, colIndex)}
-                  disabled={isRevealing}
+                  disabled={
+                    isRevealing ||
+                    cellState === "correct" ||
+                    cellState === "incorrect"
+                  }
                 ></button>
               );
             })}
