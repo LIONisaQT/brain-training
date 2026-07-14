@@ -59,7 +59,7 @@ const gameList: Record<GameId, Game> = {
     description: "Memorize and recall active panels.",
   },
   "range-finder": {
-    name: "Range Finder",
+    name: "Equality Check",
     description: "Quickly tell if an equation is equal to another.",
   },
 };
