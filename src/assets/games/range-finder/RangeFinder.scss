@@ -1,0 +1,38 @@
+.range-finder {
+  padding-top: 20vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 72px;
+}
+
+.problems {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  font-family: "Domine", serif;
+
+  .equals {
+    font-size: 48pt;
+  }
+
+  .problem {
+    font-size: 36pt;
+    padding: 0;
+    display: flex;
+    gap: 4px;
+  }
+}
+
+.options {
+  width: 90vw;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  .range-button {
+    width: 100%;
+    border: none;
+    padding: 20px;
+  }
+}
