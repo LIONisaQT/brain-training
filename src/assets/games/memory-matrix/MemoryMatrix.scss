@@ -16,21 +16,33 @@
 
     .grid-item {
       border: none;
-      width: 36px;
-      height: 36px;
+      width: 44px;
+      height: 44px;
       background-color: #bbb;
     }
 
     .active {
-      background-color: aqua;
+      background-color: rgb(104, 221, 221);
+      animation: activePulse 0.75s ease-in-out infinite;
+    }
+
+    @keyframes activePulse {
+      0%,
+      100% {
+        filter: brightness(1);
+      }
+
+      50% {
+        filter: brightness(0.9);
+      }
     }
 
     .correct {
-      background-color: greenyellow;
+      background-color: rgb(62, 209, 25);
     }
 
     .incorrect {
-      background-color: red;
+      background-color: rgb(241, 6, 61);
     }
   }
 }

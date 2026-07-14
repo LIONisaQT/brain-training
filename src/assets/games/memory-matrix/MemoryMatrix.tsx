@@ -1,20 +1,33 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import "./MemoryMatrix.scss";
 import { getRandomActiveCells } from "./memory-matrix-utils";
 import { type Feedback } from "../../elements/Feedback/Feedback";
 import Correct from "../../elements/Feedback/Correct";
+import EndGameModal from "../../elements/EndGameModal/EndGameModal";
+import Incorrect from "../../elements/Feedback/Incorrect";
 
-function MemoryMatrix() {
+const MAX_ROUNDS = 3;
+const REVEAL_TIME = 2500;
+const MAX_ERRORS = 3;
+const MIN_WIDTH = 5;
+const MIN_HEIGHT = 4;
+const MIN_ACTIVE = 3;
+
+interface MemoryMatrix {
+  gameEnd: () => void;
+}
+
+function MemoryMatrix({ gameEnd }: MemoryMatrix) {
   const [round, setRound] = useState(0);
-  const [width, setWidth] = useState(5);
-  const [height, setHeight] = useState(4);
-  const [numActive, setActive] = useState(3);
+  const [width, setWidth] = useState(MIN_WIDTH);
+  const [height, setHeight] = useState(MIN_HEIGHT);
+  const [numActive, setActive] = useState(MIN_ACTIVE);
   const [numSelected, setNumSelected] = useState(0);
+  const [numErrors, setNumErrors] = useState(0);
   const [phase, setPhase] = useState<"reveal" | "play">("reveal");
   const [cellStates, setCellStates] = useState<
     Record<string, "correct" | "incorrect">
   >({});
-  const completedRoundRef = useRef<number | null>(null);
   const [difficultyChange, setDifficultyChange] = useState<
     "width" | "height" | "active"
   >("active");
@@ -23,6 +36,18 @@ function MemoryMatrix() {
     isCorrect: false,
     position: { x: 0, y: 0 },
   });
+
+  const resetGame = () => {
+    setRound(0);
+    setWidth(MIN_WIDTH);
+    setHeight(MIN_HEIGHT);
+    setActive(MIN_ACTIVE);
+    setNumSelected(0);
+    setNumErrors(0);
+    setPhase("reveal");
+    setCellStates({});
+    setDifficultyChange("active");
+  };
 
   const activeCells = useMemo(
     () => getRandomActiveCells(width, height, numActive),
@@ -37,9 +62,8 @@ function MemoryMatrix() {
     }
 
     const timer = window.setTimeout(() => {
-      completedRoundRef.current = null;
       setPhase("play");
-    }, 1000);
+    }, REVEAL_TIME);
 
     return () => window.clearTimeout(timer);
   }, [phase, round]);
@@ -57,6 +81,17 @@ function MemoryMatrix() {
 
     if (!active) {
       setCellStates((current) => ({ ...current, [key]: "incorrect" }));
+      const totalErrors = numErrors + 1;
+      setNumErrors(totalErrors);
+
+      if (totalErrors >= MAX_ERRORS) {
+        setFeedback({
+          shouldPlay: true,
+          isCorrect: false,
+          position: { x: "50%", y: "25%" },
+        });
+      }
+
       return;
     }
 
@@ -65,10 +100,6 @@ function MemoryMatrix() {
     const nextSelected = numSelected + 1;
 
     if (nextSelected === numActive) {
-      if (completedRoundRef.current === round) {
-        return;
-      }
-
       setFeedback({
         shouldPlay: true,
         isCorrect: true,
@@ -79,34 +110,57 @@ function MemoryMatrix() {
     }
   };
 
-  const feedbackFinished = () => {
+  const feedbackFinished = (wasCorrect: boolean) => {
     setFeedback({
       shouldPlay: false,
       isCorrect: false,
       position: { x: 0, y: 0 },
     });
 
-    completedRoundRef.current = round;
+    setDifficulty(wasCorrect);
     setCellStates({});
     setNumSelected(0);
-    setRound(round + 1);
-
-    switch (difficultyChange) {
-      case "active":
-        setActive((active) => active + 2);
-        setDifficultyChange("width");
-        break;
-      case "width":
-        setWidth((width) => width + 1);
-        setDifficultyChange("height");
-        break;
-      case "height":
-        setHeight((height) => height + 1);
-        setDifficultyChange("active");
-        break;
-    }
-
+    setNumErrors(0);
+    setRound((r) => r + 1);
     setPhase("reveal");
+  };
+
+  /**
+   * Difficulty order:
+   * Active (+2) -> width (+1) -> height (+1)
+   */
+  const setDifficulty = (wasCorrect: boolean) => {
+    if (wasCorrect) {
+      switch (difficultyChange) {
+        case "active":
+          setActive((active) => active + 2);
+          setDifficultyChange("width");
+          break;
+        case "width":
+          setWidth((width) => width + 1);
+          setDifficultyChange("height");
+          break;
+        case "height":
+          setHeight((height) => height + 1);
+          setDifficultyChange("active");
+          break;
+      }
+    } else {
+      switch (difficultyChange) {
+        case "active":
+          setHeight((height) => Math.max(MIN_HEIGHT, height - 1));
+          setDifficultyChange("height");
+          break;
+        case "width":
+          setActive((active) => Math.max(MIN_ACTIVE, active - 2));
+          setDifficultyChange("active");
+          break;
+        case "height":
+          setWidth((width) => Math.max(MIN_WIDTH, width - 1));
+          setDifficultyChange("width");
+          break;
+      }
+    }
   };
 
   const isCellActive = (row: number, col: number) =>
@@ -150,8 +204,34 @@ function MemoryMatrix() {
       <Correct
         shouldPlay={feedback.shouldPlay && feedback.isCorrect}
         position={feedback.position}
-        onComplete={() => feedbackFinished()}
+        onComplete={() => feedbackFinished(true)}
       />
+      <Incorrect
+        shouldPlay={feedback.shouldPlay && !feedback.isCorrect}
+        position={feedback.position}
+        onComplete={() => feedbackFinished(false)}
+      />
+      {round === MAX_ROUNDS && (
+        <EndGameModal
+          stats={[
+            {
+              statName: "Final width",
+              statValue: width.toString(),
+            },
+            {
+              statName: "Final height",
+              statValue: height.toString(),
+            },
+            {
+              statName: "Final active",
+              statValue: numActive.toString(),
+            },
+          ]}
+          hasReview={false}
+          resetGame={resetGame}
+          gameEnd={gameEnd}
+        />
+      )}
     </>
   );
 }

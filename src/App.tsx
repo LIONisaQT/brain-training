@@ -72,7 +72,7 @@ function App() {
       case "hidden-math":
         return <HiddenMath gameEnd={() => setCurrentGame(null)} />;
       case "memory-matrix":
-        return <MemoryMatrix />;
+        return <MemoryMatrix gameEnd={() => setCurrentGame(null)} />;
       default:
         return null;
     }
