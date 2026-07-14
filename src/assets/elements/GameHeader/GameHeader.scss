@@ -1,10 +1,12 @@
 .game-header {
   position: relative;
-  padding-top: 12px;
+  padding: 20px 0;
+  background-color: white;
+  box-shadow: 0 4px 8px rgba(20, 20, 20, 0.1);
 
   .back-button {
     position: fixed;
-    top: 10px;
+    top: 18px;
     left: 6px;
     background-color: transparent;
     border: none;
@@ -14,5 +16,6 @@
     color: black;
     font-size: 24pt;
     font-weight: 600;
+    letter-spacing: -0.6px;
   }
 }

@@ -168,13 +168,17 @@ function MemoryMatrix({ gameEnd }: MemoryMatrix) {
 
   return (
     <>
-      <p className="instructions">
+      <p className="prompt">
         {isRevealing
           ? "Remember the colored panels."
           : "Select the panels you remember."}
       </p>
-      <p>
-        Round {round + 1} • Found {numSelected}/{numActive}
+      <p className="game-stats">
+        <span>Round {round + 1}</span>
+        <span>•</span>
+        <span>
+          Found {numSelected}/{numActive}
+        </span>
       </p>
       <div className="mm-grid">
         {Array.from({ length: height }).map((_, rowIndex) => (

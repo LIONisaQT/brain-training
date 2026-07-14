@@ -58,6 +58,13 @@ html {
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(0, 0, 0, 0.04),
+    rgba(0, 0, 0, 0.04) 2px,
+    transparent 2px,
+    transparent 6px
+  );
 }
 
 body {

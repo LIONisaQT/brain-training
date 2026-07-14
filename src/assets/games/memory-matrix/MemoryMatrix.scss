@@ -1,5 +1,19 @@
-.instructions {
-  padding: 40px 0 100px;
+.prompt {
+  width: 100%;
+  padding: 40px 0 92px;
+  font-size: 16pt;
+  display: flex;
+  flex-direction: column;
+}
+
+.game-stats {
+  font-size: 14pt;
+  padding: 12px 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
 .mm-grid {

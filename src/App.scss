@@ -1,5 +1,14 @@
 @import url(index.css);
 
+.welcome {
+  background-color: white;
+
+  h1 {
+    margin: 0;
+    padding: 20px 0;
+  }
+}
+
 .grid {
   display: grid;
   width: 100%;
