@@ -6,7 +6,7 @@ import Correct from "../../elements/Feedback/Correct";
 import EndGameModal from "../../elements/EndGameModal/EndGameModal";
 import Incorrect from "../../elements/Feedback/Incorrect";
 
-const MAX_ROUNDS = 3;
+const MAX_ROUNDS = 8;
 const REVEAL_TIME = 2500;
 const MAX_ERRORS = 3;
 const MIN_WIDTH = 5;
