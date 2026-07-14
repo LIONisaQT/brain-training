@@ -89,31 +89,31 @@ function App() {
             <div className="game-list">
               <div className="grid">
                 <button
-                  className="grid__item grid__item--1"
+                  className="grid__item"
                   onClick={() => setCurrentGame("quick-math")}
                 >
                   <p className="game-title">{gameList["quick-math"].name}</p>
                 </button>
                 <button
-                  className="grid__item grid__item--2"
+                  className="grid__item"
                   onClick={() => setCurrentGame("subtract")}
                 >
                   <p className="game-title">{gameList["subtract"].name}</p>
                 </button>
                 <button
-                  className="grid__item grid__item--3"
+                  className="grid__item"
                   onClick={() => setCurrentGame("math-recall")}
                 >
                   <p className="game-title">{gameList["math-recall"].name}</p>
                 </button>
                 <button
-                  className="grid__item grid__item--4"
+                  className="grid__item"
                   onClick={() => setCurrentGame("touch-highest")}
                 >
                   <p className="game-title">{gameList["touch-highest"].name}</p>
                 </button>
                 <button
-                  className="grid__item grid__item--5"
+                  className="grid__item"
                   onClick={() => setCurrentGame("hidden-math")}
                 >
                   <p className="game-title">{gameList["hidden-math"].name}</p>

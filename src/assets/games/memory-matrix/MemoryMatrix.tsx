@@ -176,7 +176,7 @@ function MemoryMatrix({ gameEnd }: MemoryMatrix) {
       <p>
         Round {round + 1} • Found {numSelected}/{numActive}
       </p>
-      <div className="grid">
+      <div className="mm-grid">
         {Array.from({ length: height }).map((_, rowIndex) => (
           <div key={rowIndex} className="grid-row">
             {Array.from({ length: width }).map((_, colIndex) => {
