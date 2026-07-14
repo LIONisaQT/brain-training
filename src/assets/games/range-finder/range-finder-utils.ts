@@ -59,8 +59,6 @@ export const isSolutionCorrect = (
   const s1 = calculateAnswer(p1);
   const s2 = calculateAnswer(p2);
 
-  console.log(s1, answer, s2);
-
   switch (answer) {
     case "<":
       return s1 < s2;
