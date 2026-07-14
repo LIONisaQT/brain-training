@@ -7,13 +7,17 @@ const CountDown = lazy(() => import("./assets/games/count-down/CountDown"));
 const HighTouch = lazy(() => import("./assets/games/high-touch/HighTouch"));
 const MathRecall = lazy(() => import("./assets/games/math-recall/MathRecall"));
 const HiddenMath = lazy(() => import("./assets/games/hidden-math/HiddenMath"));
+const MemoryMatrix = lazy(
+  () => import("./assets/games/memory-matrix/MemoryMatrix"),
+);
 
 export type GameId =
   | "quick-math"
   | "subtract"
   | "math-recall"
   | "touch-highest"
-  | "hidden-math";
+  | "hidden-math"
+  | "memory-matrix";
 
 interface Game {
   name: string;
@@ -46,6 +50,10 @@ const gameList: Record<GameId, Game> = {
     description:
       "Catch quick glimpses of math problems and solve them before they disappear.",
   },
+  "memory-matrix": {
+    name: "Memory Matrix",
+    description: "Memorize and recall active panels.",
+  },
 };
 
 function App() {
@@ -63,6 +71,8 @@ function App() {
         return <MathRecall gameEnd={() => setCurrentGame(null)} />;
       case "hidden-math":
         return <HiddenMath gameEnd={() => setCurrentGame(null)} />;
+      case "memory-matrix":
+        return <MemoryMatrix />;
       default:
         return null;
     }
@@ -107,6 +117,12 @@ function App() {
                   onClick={() => setCurrentGame("hidden-math")}
                 >
                   <p className="game-title">{gameList["hidden-math"].name}</p>
+                </button>
+                <button
+                  className="grid__item"
+                  onClick={() => setCurrentGame("memory-matrix")}
+                >
+                  <p className="game-title">{gameList["memory-matrix"].name}</p>
                 </button>
               </div>
             </div>

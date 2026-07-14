@@ -1,0 +1,36 @@
+.instructions {
+  padding: 40px 0 100px;
+}
+
+.grid {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: center;
+  justify-content: center;
+
+  .grid-row {
+    display: flex;
+    flex-direction: row;
+    gap: 4px;
+
+    .grid-item {
+      border: none;
+      width: 36px;
+      height: 36px;
+      background-color: #bbb;
+    }
+
+    .active {
+      background-color: aqua;
+    }
+
+    .correct {
+      background-color: greenyellow;
+    }
+
+    .incorrect {
+      background-color: red;
+    }
+  }
+}
