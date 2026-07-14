@@ -7,14 +7,17 @@ import Correct from "../../elements/Feedback/Correct";
 function MemoryMatrix() {
   const [round, setRound] = useState(0);
   const [width, setWidth] = useState(5);
-  const [height] = useState(4);
-  const [numActive] = useState(3);
+  const [height, setHeight] = useState(4);
+  const [numActive, setActive] = useState(3);
   const [numSelected, setNumSelected] = useState(0);
   const [phase, setPhase] = useState<"reveal" | "play">("reveal");
   const [cellStates, setCellStates] = useState<
     Record<string, "correct" | "incorrect">
   >({});
   const completedRoundRef = useRef<number | null>(null);
+  const [difficultyChange, setDifficultyChange] = useState<
+    "width" | "height" | "active"
+  >("active");
   const [feedback, setFeedback] = useState<Feedback>({
     shouldPlay: false,
     isCorrect: false,
@@ -87,7 +90,22 @@ function MemoryMatrix() {
     setCellStates({});
     setNumSelected(0);
     setRound(round + 1);
-    setWidth((currentWidth) => currentWidth + 1);
+
+    switch (difficultyChange) {
+      case "active":
+        setActive((active) => active + 2);
+        setDifficultyChange("width");
+        break;
+      case "width":
+        setWidth((width) => width + 1);
+        setDifficultyChange("height");
+        break;
+      case "height":
+        setHeight((height) => height + 1);
+        setDifficultyChange("active");
+        break;
+    }
+
     setPhase("reveal");
   };
 
